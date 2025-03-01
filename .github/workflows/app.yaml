@@ -17,8 +17,8 @@ jobs:
     environment: DOCKER_PASSWORD
     # Specify the architecture for ARM64
     strategy:
-      matrix:
-        arch: [amd64, arm64]
+      # matrix:
+      #   arch: [amd64, arm64] one job is building all, so that there is no need to add a step that creates a manifest before pushing.
       fail-fast: false
 
     steps:
@@ -30,7 +30,8 @@ jobs:
 
     - name: Pull latest Docker image
       run: |
-        docker pull --platform=${{ matrix.arch }} ros:humble
+        docker pull --platform=arm64 ros:humble
+        docker pull --platform=amd64 ros:humble
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -51,4 +52,4 @@ jobs:
         docker buildx build \
           --push \
           --tag braoutch/ros2-wave-rover:${TAG_NAME} \
-          --platform linux/${{ matrix.arch }} . 
+          --platform linux/amd64,linux/arm64 . 
