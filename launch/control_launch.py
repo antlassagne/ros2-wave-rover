@@ -14,8 +14,9 @@ def generate_launch_description():
             {"axis_linear.x" : 4},
             {"axis_angular.yaw" : 0},
             {"scale_linear.x" : 1.0},
-            {"scale_angular.yaw": 1.0}
-
+            {"scale_angular.yaw": 1.0},
+            {"qos_overrides./cmd_vel.publisher.reliability": "reliable"},  # Ensure reliability
+            {"qos_overrides./cmd_vel.publisher.durability": "volatile"}  # Ensure volatile durability
         ]
     )
     ld.add_action(joypad_node)
