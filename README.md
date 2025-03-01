@@ -41,15 +41,21 @@ KERNEL=="ttyACM[0-9]*",MODE="0666"
 ```
 Then unplug and replug the device.
 
-# Run the docker image
+# Run directly the docker image
 ```
 docker run -it --rm  braoutch/ros2-wave-rover ros2 launch grospote grospote-node
 ```
 or
 ```
-docker run --privileged -v /dev/ttyS0:/dev/ttyS0 -v /dev/input:/dev/input -it --rm  braoutch/ros2-wave-rover  ros2 launch grospote wave_rover_launch.py enable_joypad:=0 UART_address:="/dev/ttyS0"
+docker run --privileged -v /dev/ttyS0:/dev/ttyS0 -v /dev/input:/dev/input -it --rm  braoutch/ros2-wave-rover ros2 launch grospote wave_rover_launch.py enable_joypad:=0 UART_address:="/dev/ttyS0"
 ```
-It will also run (slowly) on x86 if you ran the qemu line before.
+
+The controller can also be ran from a docker image, from the robot itself or from a PC on the same wifi network.
+```
+docker run --privileged -v /dev:/dev --name controller --net=host -it --rm  braoutch/ros2-wave-rover ros2 launch grospote control_launch.py
+
+docker run --privileged -v /run/udev:/run/udev -v /dev:/dev --name controller --net=host -it --rm  braoutch/ros2-wave-rover:latest ros2 launch grospote control_launch.py
+```
 
 # Docker build - raspberry pi
 
@@ -71,6 +77,5 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1, y: 0.0, z: 0.
 Run the joypad node
 ```
 ros2 launch grospote control_launch.py
-or
-docker run --net=host -it --rm  braoutch/ros2-wave-rover ros2 launch grospote control_launch.py
+
 ```
