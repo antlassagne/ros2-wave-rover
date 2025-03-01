@@ -6,6 +6,8 @@ on:
     branches:
       - main
       - ci
+    tags:
+      - '*' 
 
 jobs:
   build-app:
@@ -41,7 +43,13 @@ jobs:
 
     - name: Build backend
       run: |
+        if [[ ${{ github.ref }} == /refs/tags/* ]]; then
+          TAG_NAME="${{ github.ref_name }}"  # Use tag name from Git if it's a tag push
+        else
+          TAG_NAME="latest"  # Default to 'latest' if not a tag
+        fi
+        echo "Building Docker image with tag: ${TAG_NAME}"
         docker buildx build \
           --push \
-          --tag braoutch/ros2-wave-rover:latest \
+          --tag braoutch/ros2-wave-rover:${TAG_NAME} \
           --platform linux/amd64,linux/arm64 . 
