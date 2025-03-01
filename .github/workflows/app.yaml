@@ -1,4 +1,4 @@
-name: Backend build
+name: Docker build
 
 # This triggers the action when a push is made to the 'main' branch
 on:
