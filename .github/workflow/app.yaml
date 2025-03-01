@@ -1,0 +1,46 @@
+name: Backend build
+
+# This triggers the action when a push is made to the 'main' branch
+on:
+  push:
+    branches:
+      - main
+      - ci
+
+jobs:
+  build-app:
+    runs-on: ubuntu-22.04
+    container:
+      image: docker:dind
+    # Specify the architecture for ARM64
+    strategy:
+      matrix:
+        arch: [amd64, arm64, linux/arm/v7]
+      fail-fast: false
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: login to docker hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    - name: Pull latest Docker image
+      run: |
+        docker pull --platform=arm64 ros:humble
+        docker pull --platform=amd64 ros:humble
+        docker pull --platform=linux/arm/v7 ros:humble
+
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v3
+      with:
+        platforms: linux/arm64, linux/arm/v7, linux/amd64
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build backend
+      run: |
+        docker buildx build \
+          --tag braoutch/ros2-wave-rover:latest \
+          --platform linux/amd64,linux/arm/v7,linux/arm64 . 

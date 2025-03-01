@@ -71,4 +71,6 @@ ros2 topic pub /cmd_vel geometry_msgs/msg/Twist "{linear: {x: 0.1, y: 0.0, z: 0.
 Run the joypad node
 ```
 ros2 launch grospote control_launch.py
+or
+docker run --net=host -it --rm  braoutch/ros2-wave-rover ros2 launch grospote control_launch.py
 ```
