@@ -48,7 +48,7 @@ jobs:
         else
           TAG_NAME="latest"  # Default to 'latest' if not a tag
         fi
-        echo "Building Docker image with tag: ${TAG_NAME}"
+        echo "Ref is ${{ github.ref }}. Building Docker image with tag: ${TAG_NAME}"
         docker buildx build \
           --push \
           --tag braoutch/ros2-wave-rover:${TAG_NAME} \
