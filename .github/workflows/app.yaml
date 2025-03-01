@@ -30,8 +30,7 @@ jobs:
 
     - name: Pull latest Docker image
       run: |
-        docker pull --platform=arm64 ros:humble
-        docker pull --platform=amd64 ros:humble
+        docker pull --platform=${{ matrix.arch }} ros:humble
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
@@ -52,4 +51,4 @@ jobs:
         docker buildx build \
           --push \
           --tag braoutch/ros2-wave-rover:${TAG_NAME} \
-          --platform linux/amd64,linux/arm64 . 
+          --platform linux/${{ matrix.arch }} . 
