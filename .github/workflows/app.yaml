@@ -16,7 +16,7 @@ jobs:
     # Specify the architecture for ARM64
     strategy:
       matrix:
-        arch: [amd64, arm64, linux/arm/v7]
+        arch: [amd64, arm64]
       fail-fast: false
 
     steps:
@@ -30,12 +30,11 @@ jobs:
       run: |
         docker pull --platform=arm64 ros:humble
         docker pull --platform=amd64 ros:humble
-        docker pull --platform=linux/arm/v7 ros:humble
 
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
       with:
-        platforms: linux/arm64, linux/arm/v7, linux/amd64
+        platforms: linux/arm64, linux/amd64
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -44,4 +43,4 @@ jobs:
       run: |
         docker buildx build \
           --tag braoutch/ros2-wave-rover:latest \
-          --platform linux/amd64,linux/arm/v7,linux/arm64 . 
+          --platform linux/amd64,linux/arm64 . 
